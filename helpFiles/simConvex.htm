@@ -142,12 +142,13 @@ td.section { margin: 0; padding: 0; }
 </tr>
 <tr class="apiTableTr">
 <td class="apiTableLeftLSyn">Lua synopsis</td>
-<td class="apiTableRightLSyn">int convexShapeHandle = simConvex.hull(int[] objectHandles)</td>
+<td class="apiTableRightLSyn">int convexShapeHandle = simConvex.hull(int[] objectHandles, float growth = 0.0)</td>
 </tr>
 <tr class="apiTableTr">
 <td class="apiTableLeftLParam">Lua arguments</td>
 <td class="apiTableRightLParam">
 <div><strong>objectHandles</strong>: the handles of objects. Only shapes, dummies, OC-trees and point clouds are taken into account</div>
+<div><strong>growth</strong>: an optional growth</div>
 </td>
 </tr>
 <tr class="apiTableTr">
@@ -157,7 +158,7 @@ td.section { margin: 0; padding: 0; }
 
 <tr class="apiTableTr">
 <td class="apiTableLeftPSyn">Python synopsis</td>
-<td class="apiTableRightPSyn">int convexShapeHandle = simConvex.hull(list objectHandles)</td>
+<td class="apiTableRightPSyn">int convexShapeHandle = simConvex.hull(list objectHandles, float growth = 0.0)</td>
 </tr>
 
 <tr class="apiTableTr">
@@ -179,12 +180,13 @@ td.section { margin: 0; padding: 0; }
 </tr>
 <tr class="apiTableTr">
 <td class="apiTableLeftLSyn">Lua synopsis</td>
-<td class="apiTableRightLSyn">float[] vertices, int[] indices = simConvex.qhull(float[] points)</td>
+<td class="apiTableRightLSyn">float[] vertices, int[] indices = simConvex.qhull(float[] points, float growth = 0.0)</td>
 </tr>
 <tr class="apiTableTr">
 <td class="apiTableLeftLParam">Lua arguments</td>
 <td class="apiTableRightLParam">
 <div><strong>points</strong>: an array with consecutive 3D point coordinates</div>
+<div><strong>growth</strong>: an optional growth</div>
 </td>
 </tr>
 <tr class="apiTableTr">
@@ -197,7 +199,7 @@ td.section { margin: 0; padding: 0; }
 
 <tr class="apiTableTr">
 <td class="apiTableLeftPSyn">Python synopsis</td>
-<td class="apiTableRightPSyn">list vertices, list indices = simConvex.qhull(list points)</td>
+<td class="apiTableRightPSyn">list vertices, list indices = simConvex.qhull(list points, float growth = 0.0)</td>
 </tr>
 
 <tr class="apiTableTr">

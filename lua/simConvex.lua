@@ -1,6 +1,6 @@
 local simConvex = loadPlugin('simConvex');
 
-function simConvex.hull(handles)
+function simConvex.hull(handles, growth)
     local vert = {}
     for _, h in ipairs(handles) do
         local t = sim.getObjectType(h)
@@ -42,13 +42,41 @@ function simConvex.hull(handles)
         end
     end
     if #vert == 0 then error('empty input') end
-    local v, i = sim.getQHull(vert)
+    local v, i = simConvex._ghull(vert, growth)
     local h = sim.createShape(0, 0.0, v, i)
     return h
 end
 
-function simConvex.qhull(vertices)
+function simConvex.qhull(vertices, growth)
+    local vert, ind = simConvex._ghull(vertices, growth)
+    return vert, ind
+end
+
+function simConvex._ghull(vertices, growth)
+    growth = growth or 0.0
     local vert, ind = sim.getQHull(vertices)
+    if growth > 0.0 then
+        local nvert = {}
+        for j = 0, #ind / 3 - 1 do
+            local indd = {ind[3 * j + 1], ind[3 * j + 2], ind[3 * j + 3]}
+            local w = {Vector({vert[3 * indd[1] + 1], vert[3 * indd[1] + 2], vert[3 * indd[1] + 3]}),
+                       Vector({vert[3 * indd[2] + 1], vert[3 * indd[2] + 2], vert[3 * indd[2] + 3]}),
+                       Vector({vert[3 * indd[3] + 1], vert[3 * indd[3] + 2], vert[3 * indd[3] + 3]}) }
+            local v12 = w[1] - w[2]
+            local v13 = w[1] - w[3]
+            local n = v12:cross(v13)
+            n = n:normalized() * growth
+            for k = -1.0, 1.0, 2.0 do
+                for l = 1, 3 do
+                    local vv = w[l] + n * k
+                    nvert[#nvert + 1] = vv[1]
+                    nvert[#nvert + 1] = vv[2]
+                    nvert[#nvert + 1] = vv[3]
+                end
+            end
+        end
+        vert, ind = sim.getQHull(nvert)
+    end
     return vert, ind
 end
 

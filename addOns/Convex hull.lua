@@ -21,16 +21,16 @@ function sysCall_nonSimulation()
                             if (tt & 1) > 0 then
                                 local shapes = extractSimpleShapes(sim.copyPasteObjects({obj}, 2|4|8|16|32))                            
                                 for j = 1, #shapes do
-                                    local h = simConvex.hull({shapes[j]})
+                                    local h = simConvex.hull({shapes[j]}, params.growth)
                                     generated[#generated + 1] = h
                                 end
                                 sim.removeObjects(shapes)
                             else
-                                local h = simConvex.hull({obj})
+                                local h = simConvex.hull({obj}, params.growth)
                                 generated[#generated + 1] = h
                             end
                         else
-                            local h = simConvex.hull({obj})
+                            local h = simConvex.hull({obj}, params.growth)
                             generated[#generated + 1] = h
                         end
                     end
@@ -38,7 +38,7 @@ function sysCall_nonSimulation()
             else
                 -- perSelection
                 if #params.sel > 0 then
-                    local h = simConvex.hull(params.sel)
+                    local h = simConvex.hull(params.sel, params.growth)
                     generated[#generated + 1] = h
                 end
             end
@@ -83,6 +83,10 @@ function sysCall_init()
             <radiobutton text="generate one hull per object component" on-click="updateUi" id="${perComponent}" checked="false"/>
             <checkbox id="${model_objects}" text="include model objects" checked="false" on-change="updateUi" />
             <checkbox id="${hidden_objects}" text="exclude hidden objects" checked="false" on-change="updateUi" />
+            <group flat="true" content-margins="0,0,0,0" layout="form">
+                <label text="growth:" />
+                <spinbox id="${growth}" minimum="0.0" maximum="100.0" value="0.0" step="0.02" on-change="updateUi" />
+            </group>
             <button id="${gen}" text="Generate" on-click="initGenerate" />
         </ui>]]
              )
@@ -122,6 +126,7 @@ function initGenerate()
     
     leaveNow = true
     params = {sel = sel}
+    
     if simUI.getRadiobuttonValue(ui, perSelection) == 1 then
         params.mode = 'perSelection'
     end
@@ -131,6 +136,7 @@ function initGenerate()
     if simUI.getRadiobuttonValue(ui, perComponent) == 1 then
         params.mode = 'perComponent'
     end
+    params.growth = tonumber(simUI.getSpinboxValue(ui, growth))
 end
 
 function extractSimpleShapes(shapes)
