@@ -3,7 +3,7 @@ simUI = require('simUI')
 simConvex = require('simConvex')
 
 function sysCall_info()
-    return {autoStart = false, menu = 'Geometry / Mesh\nConvex decomposer\nV-HACD...'}
+    return {autoStart = false, menu = 'Geometry / Mesh\nConvex decomposition\nV-HACD...'}
 end
 
 function sysCall_nonSimulation()
@@ -18,9 +18,12 @@ function sysCall_nonSimulation()
                 local cnt = 1
                 for i = 1, #params.sel do
                     local h = params.sel[i]
-                    sim.addLog(sim.verbosity_scriptinfos, string.format('Generating V-HACD convex decomposed equivalent shape (%i/%i)...', cnt, #params.sel)) 
-                    generated[#generated + 1] = getConvexDecomposed(h, params, params.adoptColor)
-                    sim.addLog(sim.verbosity_scriptinfos, 'Done.')
+                    local vert, ind = sim.getShapeMesh(h)
+                    sim.addLog(sim.verbosity_scriptinfos, string.format('Generating V-HACD convex decomposed equivalent shape (%i/%i)... (input shape has %i triangular faces)', cnt, #params.sel, #ind / 3))
+                    local nh = getConvexDecomposed(h, params, params.adoptColor)
+                    generated[#generated + 1] = nh
+                    local vert, ind = sim.getShapeMesh(nh)
+                    sim.addLog(sim.verbosity_scriptinfos, string.format('Done. (output shape has %i triangular faces)', #ind / 3))
                     cnt = cnt + 1
                 end
                 sim.announceSceneContentChange()
@@ -41,7 +44,7 @@ function sysCall_nonSimulation()
             end
         else
             if not abort then
-                simUI.msgBox(simUI.msgbox_type.info, simUI.msgbox_buttons.ok, "Convex Decomposer", 'The resulting selection is effectively empty, indicating it does not contain any non-convex shapes that meet the specified inclusion criteria..')
+                simUI.msgBox(simUI.msgbox_type.info, simUI.msgbox_buttons.ok, "Convex Decomposition", 'The resulting selection is effectively empty, indicating it does not contain any non-convex shapes that meet the specified inclusion criteria..')
                 sim.setObjectSel({})
             end
         end
@@ -52,10 +55,10 @@ end
 function sysCall_init()
     local sel = sim.getObjectSel()
     if #sel == 0 or sim.getSimulationState() ~= sim.simulation_stopped then
-        simUI.msgBox(simUI.msgbox_type.info, simUI.msgbox_buttons.ok, "Convex Decomposer", 'Make sure that at least one object is selected, and that simulation is not running.')
+        simUI.msgBox(simUI.msgbox_type.info, simUI.msgbox_buttons.ok, "Convex Decomposition", 'Make sure that at least one object is selected, and that simulation is not running.')
     else
         ui = simUI.create(
-          [[<ui title="V-HACD Convex Decomposer" closeable="true" on-close="onClose" modal="true">
+          [[<ui title="V-HACD Convex Decomposition" closeable="true" on-close="onClose" modal="true">
             <group flat="true" content-margins="0,0,0,0" layout="form">
                 <label text="resolution:" />
                 <spinbox id="${resolution}" minimum="10000" maximum="64000000" value="100000" step="10000" on-change="updateUi" />
@@ -170,6 +173,8 @@ function getConvexDecomposed(shapeHandle, params, adoptColor)
             sim.relocateShapeFrame(nshape, {0, 0, 0, 0, 0, 0, 0})
             if adoptColor then
                 sim.setObjectColor(nshape, 0, sim.colorcomponent_ambient_diffuse, sim.getObjectColor(shape, 0, sim.colorcomponent_ambient_diffuse))
+                local angle = sim.getObjectFloatParam(shape, sim.shapefloatparam_shading_angle)
+                sim.setObjectFloatParam(nshape, sim.shapefloatparam_shading_angle, angle)
             end
             newShapes[#newShapes + 1] = nshape
         end

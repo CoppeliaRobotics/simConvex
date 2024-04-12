@@ -43,6 +43,7 @@ function sysCall_nonSimulation()
                 end
             end
             local convex = true
+            local faces = 0
             for i = 1, #generated do
                 local h = generated[i]
                 if (sim.getShapeGeomInfo(h) & 4) == 0 then
@@ -54,6 +55,9 @@ function sysCall_nonSimulation()
 
                 -- Various:
                 sim.setObjectAlias(h, 'convexHull')
+                sim.setObjectFloatParam(h, sim.shapefloatparam_shading_angle, 45.0 * math.pi / 180.0)
+                local vert, ind = sim.getShapeMesh(h)
+                faces = faces + #ind / 3
             end
             if not convex then
                 sim.addLog(sim.verbosity_scripterrors, 'One or more of the generated shapes is not convex.') 
@@ -62,6 +66,7 @@ function sysCall_nonSimulation()
 
             if #generated > 0 then
                 sim.announceSceneContentChange()
+                sim.addLog(sim.verbosity_scriptinfos, string.format('Generated %i convex hull(s) (with a total of %i triangular faces)', #generated, faces))
             else
                 simUI.msgBox(simUI.msgbox_type.info, simUI.msgbox_buttons.ok, "Convex Hull Generator", 'The resulting selection is effectively empty...')
                 sim.setObjectSel({})

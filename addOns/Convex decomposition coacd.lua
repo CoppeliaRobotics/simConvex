@@ -2,7 +2,7 @@
 
 '''luaExec
 function sysCall_info()
-    return {autoStart = false, menu = 'Geometry / Mesh\nConvex decomposer\nCoACD...'}
+    return {autoStart = false, menu = 'Geometry / Mesh\nConvex decomposition\nCoACD...'}
 end
 '''
 
@@ -26,7 +26,7 @@ def sysCall_nonSimulation():
                 sim.addLog(sim.verbosity_scripterrors, 'One or more of the generated shapes is not convex.') 
         else:
             if not self.abort:
-                simUI.msgBox(simUI.msgbox_type.info, simUI.msgbox_buttons.ok, "Convex Decomposer", 'The resulting selection is effectively empty, indicating it does not contain any non-convex shapes that meet the specified inclusion criteria..')
+                simUI.msgBox(simUI.msgbox_type.info, simUI.msgbox_buttons.ok, "Convex Decomposition", 'The resulting selection is effectively empty, indicating it does not contain any non-convex shapes that meet the specified inclusion criteria..')
                 sim.setObjectSel({})
         return {'cmd' : 'cleanup'} 
 
@@ -39,12 +39,12 @@ def sysCall_init():
     self.abort = False
     sel = sim.getObjectSel()
     if len(sel) == 0 or sim.getSimulationState() != sim.simulation_stopped:
-        simUI.msgBox(simUI.msgbox_type.info, simUI.msgbox_buttons.ok, "Convex Decomposer", 'Make sure that at least one object is selected, and that simulation is not running.')
+        simUI.msgBox(simUI.msgbox_type.info, simUI.msgbox_buttons.ok, "Convex Decomposition", 'Make sure that at least one object is selected, and that simulation is not running.')
     else:
         missingPackages = checkPackages()
         if len(missingPackages) > 0:
             msg = 'You are missing some Python package that you should install with:\npip install ' + missingPackages
-            simUI.msgBox(simUI.msgbox_type.warning, simUI.msgbox_buttons.ok, "Convex Decomposer", msg)
+            simUI.msgBox(simUI.msgbox_type.warning, simUI.msgbox_buttons.ok, "Convex Decomposition", msg)
             sim.addLog(sim.verbosity_errors, msg)
         self.threshold = 100
         self.max_convex_hull = 101
@@ -63,7 +63,7 @@ def sysCall_init():
         self.gen = 114
         self.ui = simUI.create(
           '''
-          <ui title="CoACD Convex Decomposer" closeable="true" on-close="onClose" modal="true">
+          <ui title="CoACD Convex Decomposition" closeable="true" on-close="onClose" modal="true">
             <group flat="true" content-margins="0,0,0,0" layout="form">
                 <label text="threshold:" />
                 <spinbox id="100" minimum="0.02" maximum="1" value="0.05" step="0.01" on-change="updateUi" />
@@ -162,9 +162,12 @@ def generate(params):
     generated = []
     cnt = 1
     for h in self.sel:
-        sim.addLog(sim.verbosity_scriptinfos, 'Generating CoACD convex decomposed equivalent shape ({}/{})...'.format(cnt, len(self.sel))) 
-        generated.append(getConvexDecomposed(h, params, self.adoptColors))
-        sim.addLog(sim.verbosity_scriptinfos, 'Done.')
+        vert, ind, *_ = sim.getShapeMesh(h)
+        sim.addLog(sim.verbosity_scriptinfos, 'Generating CoACD convex decomposed equivalent shape ({}/{})... (input shape has {} triangular faces)'.format(cnt, len(self.sel), len(ind) / 3)) 
+        nh = getConvexDecomposed(h, params, self.adoptColors)
+        generated.append(nh)
+        vert, ind, *_ = sim.getShapeMesh(nh)
+        sim.addLog(sim.verbosity_scriptinfos, 'Done. (output shape has {} triangular faces)'.format(len(ind) / 3))
         cnt += 1
     sim.announceSceneContentChange()
     return generated
@@ -208,6 +211,8 @@ def getConvexDecomposed(shapeHandle, params, adoptColor):
             sim.relocateShapeFrame(nshape, [0, 0, 0, 0, 0, 0, 0])
             if adoptColor:
                 sim.setObjectColor(nshape, 0, sim.colorcomponent_ambient_diffuse, sim.getObjectColor(shape, 0, sim.colorcomponent_ambient_diffuse))
+                angle = sim.getObjectFloatParam(shape, sim.shapefloatparam_shading_angle)
+                sim.setObjectFloatParam(nshape, sim.shapefloatparam_shading_angle, angle)
             newShapes.append(nshape)
     sim.removeObjects(allShapes)
     if len(newShapes) > 1:
