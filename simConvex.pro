@@ -40,8 +40,6 @@ INCLUDEPATH += "external/qHull"
     QMAKE_CFLAGS += -Wno-unused-parameter
     QMAKE_CFLAGS += -Wno-unused-but-set-variable
     QMAKE_CFLAGS += -Wno-unused-local-typedefs
-
-    QMAKE_CFLAGS += -fpermissive
 }
 
 win32 {
