@@ -1,7 +1,3 @@
-sim = require('sim')
-simUI = require('simUI')
-simConvex = require('simConvex')
-
 function sysCall_info()
     return {autoStart = false, menu = 'Geometry / Mesh\nConvex hull...'}
 end
@@ -77,6 +73,10 @@ function sysCall_nonSimulation()
 end
     
 function sysCall_init()
+    sim = require('sim')
+    simUI = require('simUI')
+    simConvex = require('simConvex')
+
     local sel = sim.getObjectSel()
     if #sel == 0 or sim.getSimulationState() ~= sim.simulation_stopped then
         simUI.msgBox(simUI.msgbox_type.info, simUI.msgbox_buttons.ok, "Convex Hull Generator", 'Make sure that at least one object is selected, and that simulation is not running.')
