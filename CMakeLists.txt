@@ -85,3 +85,7 @@ target_include_directories(simConvex PRIVATE ${COPPELIASIM_INCLUDE_DIR}/simStack
 target_include_directories(simConvex PRIVATE ${COPPELIASIM_INCLUDE_DIR}/simLib)
 coppeliasim_add_lua(lua/simConvex.lua)
 coppeliasim_add_lua(lua/simConvex-ce.lua)
+coppeliasim_add_addon("addOns/Convex decomposition coacd.lua")
+coppeliasim_add_addon("addOns/Convex decomposition hacd.lua")
+coppeliasim_add_addon("addOns/Convex decomposition vhacd.lua")
+coppeliasim_add_addon("addOns/Convex hull.lua")
