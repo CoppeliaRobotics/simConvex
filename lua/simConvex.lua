@@ -54,7 +54,7 @@ end
 
 function simConvex._ghull(vertices, growth)
     growth = growth or 0.0
-    local vert, ind = sim.getQHull(vertices)
+    local vert, ind = sim._qhull(vertices)
     if growth > 0.0 then
         local nvert = {}
         for j = 0, #ind / 3 - 1 do
@@ -75,7 +75,7 @@ function simConvex._ghull(vertices, growth)
                 end
             end
         end
-        vert, ind = sim.getQHull(nvert)
+        vert, ind = sim._qhull(nvert) -- sim.getQHull(nvert)
     end
     return vert, ind
 end
