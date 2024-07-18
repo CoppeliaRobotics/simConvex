@@ -127,13 +127,13 @@ def initGenerate(ui, a):
         if sim.getModelProperty(h) == sim.modelproperty_not_model or not includeModelShapes:
             selMap[h] = True
         else:
-            tree = sim.getObjectsInTree(h, sim.object_shape_type)
+            tree = sim.getObjectsInTree(h, sim.sceneobject_shape)
             for t in tree:
                 selMap[t] = True
     self.sel = []
     self.convexSel = []
     for obj in selMap:
-        if sim.getObjectType(obj) == sim.object_shape_type:
+        if sim.getObjectType(obj) == sim.sceneobject_shape:
             if not excludeHiddenShapes or (sim.getObjectInt32Param(obj, sim.objintparam_visible) > 0):
                 t, *_ = sim.getShapeGeomInfo(obj)
                 if (t & 4) == 0:

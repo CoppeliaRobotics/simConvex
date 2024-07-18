@@ -4,20 +4,20 @@ function simConvex.hull(handles, growth)
     local vert = {}
     for _, h in ipairs(handles) do
         local t = sim.getObjectType(h)
-        if t == sim.object_shape_type then
+        if t == sim.sceneobject_shape then
             local v = sim.getShapeMesh(h)
             local m = sim.getObjectMatrix(h)
             v = sim.multiplyVector(m, v)
             for _, x in ipairs(v) do table.insert(vert, x) end
-        elseif t == sim.object_dummy_type then
+        elseif t == sim.sceneobject_dummy then
             local p = sim.getObjectPosition(h)
             for _, x in ipairs(p) do table.insert(vert, x) end
-        elseif t == sim.object_pointcloud_type then
+        elseif t == sim.sceneobject_pointcloud then
             local v = sim.getPointCloudPoints(h)
             local m = sim.getObjectMatrix(h)
             v = sim.multiplyVector(m, v)
             for _, x in ipairs(v) do table.insert(vert, x) end
-        elseif t == sim.object_octree_type then
+        elseif t == sim.sceneobject_octree then
             local v = sim.getOctreeVoxels(h)
             local vsh = 0.5 * sim.getObjectFloatParam(h, sim.octreefloatparam_voxelsize)
             local m = sim.getObjectMatrix(h)

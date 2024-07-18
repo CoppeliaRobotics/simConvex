@@ -30,7 +30,7 @@ function compute()
 
     local firstShape = nil -- shape appearance source
     for i, obj in ipairs(params.sel) do
-        if sim.getObjectType(obj) == sim.object_shape_type then
+        if sim.getObjectType(obj) == sim.sceneobject_shape then
             firstShape = obj
             break
         end
@@ -39,8 +39,8 @@ function compute()
     if params.mode == 'perObject' or params.mode == 'perComponent' then
         for i, obj in ipairs(params.sel) do
             local t = sim.getObjectType(obj)
-            if t == sim.object_shape_type or t == sim.object_pointcloud_type or t == sim.object_octree_type then
-                if t == sim.object_shape_type and params.mode == 'perComponent' then
+            if t == sim.sceneobject_shape or t == sim.sceneobject_pointcloud or t == sim.sceneobject_octree then
+                if t == sim.sceneobject_shape and params.mode == 'perComponent' then
                     local tt = sim.getShapeGeomInfo(obj)
                     if (tt & 1) > 0 then
                         local shapes = extractSimpleShapes(sim.copyPasteObjects({obj}, 2|4|8|16|32))
@@ -131,7 +131,7 @@ function initGenerate()
         if sim.getModelProperty(h) == sim.modelproperty_not_model or not includeModelObjects then
             selMap[h] = true
         else
-            for j, hj in ipairs(sim.getObjectsInTree(h, sim.object_shape_type)) do
+            for j, hj in ipairs(sim.getObjectsInTree(h, sim.sceneobject_shape)) do
                 selMap[hj] = true
             end
         end

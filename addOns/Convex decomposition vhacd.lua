@@ -107,7 +107,7 @@ function initGenerate()
         if sim.getModelProperty(h) == sim.modelproperty_not_model or not includeModelShapes then
             selMap[h] = true
         else
-            local tree = sim.getObjectsInTree(h, sim.object_shape_type)
+            local tree = sim.getObjectsInTree(h, sim.sceneobject_shape)
             for j = 1, #tree do
                 selMap[tree[j]] = true
             end
@@ -116,7 +116,7 @@ function initGenerate()
     local sel = {}
     local convexSel = {}
     for obj, v in pairs(selMap) do
-        if sim.getObjectType(obj) == sim.object_shape_type then
+        if sim.getObjectType(obj) == sim.sceneobject_shape then
             if not excludeHiddenShapes or (sim.getObjectInt32Param(obj, sim.objintparam_visible) > 0) then
                 local t = sim.getShapeGeomInfo(obj)
                 if (t & 4) == 0 then
