@@ -76,6 +76,10 @@ function compute()
         sim.relocateShapeFrame(h, {0, 0, 0, 0, 0, 0, 0})
         sim.alignShapeBB(h, {0, 0, 0, 0, 0, 0, 0})
 
+        -- Centered inertia, kep defaults otherwise:
+        local im, com = sim.getShapeInertia(h)
+        sim.setShapeInertia(h, im, {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0})
+
         -- Various:
         sim.setObjectAlias(h, 'convexHull')
         if params.preserveAppearance and firstShape then
