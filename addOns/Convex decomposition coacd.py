@@ -43,7 +43,7 @@ def sysCall_init():
     else:
         missingPackages = checkPackages()
         if len(missingPackages) > 0:
-            msg = 'You are missing some Python package that you should install with:\npip install ' + missingPackages
+            msg = 'You are missing some Python package that you should install with:\n' + sim.getProperty(sim.handle_app, 'defaultPython') + ' -m pip install ' + missingPackages
             simUI.msgBox(simUI.msgbox_type.warning, simUI.msgbox_buttons.ok, "Convex Decomposition", msg)
             sim.addLog(sim.verbosity_errors, msg)
         self.threshold = 100
