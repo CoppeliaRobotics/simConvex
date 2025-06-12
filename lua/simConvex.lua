@@ -1,4 +1,5 @@
-local simConvex = loadPlugin('simConvex');
+local simConvex = loadPlugin 'simConvex'
+local sim = require 'sim-1'
 
 function simConvex.hull(handles, growth)
     local vert = {}

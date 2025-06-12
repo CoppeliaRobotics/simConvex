@@ -1,3 +1,7 @@
+local sim
+local simUI
+local simConvex
+
 function sysCall_info()
     return {autoStart = false, menu = 'Geometry / Mesh\nConvex decomposition\nHACD...'}
 end
@@ -36,7 +40,7 @@ function sysCall_nonSimulation()
                 end
             end
             if not convex then
-                sim.addLog(sim.verbosity_scripterrors, 'One or more of the generated shapes is not convex.') 
+                sim.addLog(sim.verbosity_scripterrors, 'One or more of the generated shapes is not convex.')
             end
         else
             if not abort then
@@ -44,15 +48,15 @@ function sysCall_nonSimulation()
                 sim.setObjectSel({})
             end
         end
-        return {cmd = 'cleanup'} 
+        return {cmd = 'cleanup'}
     end
 end
-    
+
 function sysCall_init()
-    sim = require('sim')
-    simUI = require('simUI')
-    simConvex = require('simConvex')
-    
+    sim = require 'sim-1'
+    simUI = require 'simUI'
+    simConvex = require 'simConvex'
+
     local sel = sim.getObjectSel()
     if #sel == 0 or sim.getSimulationState() ~= sim.simulation_stopped then
         simUI.msgBox(simUI.msgbox_type.info, simUI.msgbox_buttons.ok, "Convex Decomposition", 'Make sure that at least one object is selected, and that simulation is not running.')
@@ -124,7 +128,7 @@ function initGenerate()
             end
         end
     end
-    
+
     leaveNow = true
     if #sel + #convexSel > 0 then
         params = {adoptColor = adoptColors, sel = sel, convexSel = convexSel}
@@ -193,9 +197,9 @@ function getConvexDecomposed(shapeHandle, params, adoptColor)
     sim.setShapeMass(newShape, sim.getShapeMass(shapeHandle))
     local inertiaMatrix, com = sim.getShapeInertia(shapeHandle)
     sim.setShapeInertia(newShape, inertiaMatrix, com)
-    
+
     -- Various:
     sim.setObjectAlias(newShape, sim.getObjectAlias(shapeHandle) .. '_convexDecomposed')
-    
+
     return newShape
 end

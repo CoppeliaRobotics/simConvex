@@ -1,11 +1,15 @@
+local sim
+local simUI
+local simConvex
+
 function sysCall_info()
     return {autoStart = false, menu = 'Geometry / Mesh\nConvex hull...'}
 end
 
 function sysCall_init()
-    sim = require('sim')
-    simUI = require('simUI')
-    simConvex = require('simConvex')
+    sim = require 'sim'
+    simUI = require 'simUI'
+    simConvex = require 'simConvex'
 
     local sel = sim.getObjectSel()
     if #sel == 0 or sim.getSimulationState() ~= sim.simulation_stopped then

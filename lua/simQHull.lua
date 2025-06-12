@@ -1,5 +1,5 @@
 -- For backward compatibility
-simConvex = require('simConvex')
+local simConvex = require 'simConvex'
 local simQHull = {}
 
 function simQHull.computeShape(handles)
