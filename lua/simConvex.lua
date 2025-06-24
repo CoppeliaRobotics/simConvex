@@ -1,5 +1,6 @@
 local simConvex = loadPlugin 'simConvex'
-local sim = require 'sim-1'
+local sim = require 'sim-2'
+local simEigen = require 'simEigen'
 
 function simConvex.hull(handles, growth)
     local vert = {}
@@ -22,9 +23,9 @@ function simConvex.hull(handles, growth)
             local v = sim.getOctreeVoxels(h)
             local vsh = 0.5 * sim.getObjectFloatParam(h, sim.octreefloatparam_voxelsize)
             local m = sim.getObjectMatrix(h)
-            local vx = Vector{m[1], m[5], m[9]} * vsh
-            local vy = Vector{m[2], m[6], m[10]} * vsh
-            local vz = Vector{m[3], m[7], m[11]} * vsh
+            local vx = simEigen.Vector{m[1], m[5], m[9]} * vsh
+            local vy = simEigen.Vector{m[2], m[6], m[10]} * vsh
+            local vz = simEigen.Vector{m[3], m[7], m[11]} * vsh
             for x = -1, 1, 2 do
                 for y = -1, 1, 2 do
                     for z = -1, 1, 2 do
@@ -60,9 +61,9 @@ function simConvex._ghull(vertices, growth)
         local nvert = {}
         for j = 0, #ind / 3 - 1 do
             local indd = {ind[3 * j + 1], ind[3 * j + 2], ind[3 * j + 3]}
-            local w = {Vector({vert[3 * indd[1] + 1], vert[3 * indd[1] + 2], vert[3 * indd[1] + 3]}),
-                       Vector({vert[3 * indd[2] + 1], vert[3 * indd[2] + 2], vert[3 * indd[2] + 3]}),
-                       Vector({vert[3 * indd[3] + 1], vert[3 * indd[3] + 2], vert[3 * indd[3] + 3]}) }
+            local w = {simEigen.Vector({vert[3 * indd[1] + 1], vert[3 * indd[1] + 2], vert[3 * indd[1] + 3]}),
+                       simEigen.Vector({vert[3 * indd[2] + 1], vert[3 * indd[2] + 2], vert[3 * indd[2] + 3]}),
+                       simEigen.Vector({vert[3 * indd[3] + 1], vert[3 * indd[3] + 2], vert[3 * indd[3] + 3]}) }
             local v12 = w[1] - w[2]
             local v13 = w[1] - w[3]
             local n = v12:cross(v13)
