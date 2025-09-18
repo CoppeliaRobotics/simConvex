@@ -1,5 +1,5 @@
 local simConvex = loadPlugin 'simConvex'
-local sim = require 'sim-2'
+local sim = require 'sim-1'
 local simEigen = require 'simEigen'
 
 function simConvex.hull(handles, growth)
