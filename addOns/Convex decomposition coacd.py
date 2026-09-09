@@ -23,15 +23,15 @@ def sysCall_nonSimulation():
                 if (inf & 4) == 0:
                     convex = False
             if not convex:
-                sim.addLog(sim.verbosity_scripterrors, 'One or more of the generated shapes is not convex.') 
+                sim.addLog(sim.verbosity_scripterrors, 'One or more of the generated shapes is not convex.')
         else:
             if not self.abort:
                 simUI.msgBox(simUI.msgbox_type.info, simUI.msgbox_buttons.ok, "Convex Decomposition", 'The resulting selection is effectively empty, indicating it does not contain any non-convex shapes that meet the specified inclusion criteria..')
                 sim.setObjectSel({})
-        return {'cmd' : 'cleanup'} 
+        return {'cmd' : 'cleanup'}
 
 def sysCall_init():
-    sim = require('sim')
+    sim = require('sim-1')
     simUI = require('simUI')
     simConvex = require('simConvex')
 
@@ -141,7 +141,7 @@ def initGenerate(ui, a):
                     self.sel.append(obj)
                 else:
                     self.convexSel.append(obj)
-    
+
     self.leaveNow = True
     if len(self.sel) + len(self.convexSel) > 0:
         self.params = {}
@@ -157,13 +157,13 @@ def initGenerate(ui, a):
         self.params['seed'] = int(simUI.getSpinboxValue(self.ui, self.seed))
         self.params['pca'] = simUI.getCheckboxValue(self.ui, self.pca) > 0
         self.params['merge'] = simUI.getCheckboxValue(self.ui, self.merge) > 0
-    
+
 def generate(params):
     generated = []
     cnt = 1
     for h in self.sel:
         vert, ind, *_ = sim.getShapeMesh(h)
-        sim.addLog(sim.verbosity_scriptinfos, 'Generating CoACD convex decomposed equivalent shape ({}/{})... (input shape has {} triangular faces)'.format(cnt, len(self.sel), len(ind) / 3)) 
+        sim.addLog(sim.verbosity_scriptinfos, 'Generating CoACD convex decomposed equivalent shape ({}/{})... (input shape has {} triangular faces)'.format(cnt, len(self.sel), len(ind) / 3))
         nh = getConvexDecomposed(h, params, self.adoptColors)
         generated.append(nh)
         vert, ind, *_ = sim.getShapeMesh(nh)
@@ -171,7 +171,7 @@ def generate(params):
         cnt += 1
     sim.announceSceneContentChange()
     return generated
-    
+
 def extractSimpleShapes(shapes):
     retVal = []
     for shape in shapes:
@@ -201,7 +201,7 @@ def getConvexDecomposed(shapeHandle, params, adoptColor):
             vert = part[0].flatten().tolist()
             ind = part[1].flatten().tolist()
             nshape = sim.createShape(0, 0.0, vert, ind)
-            
+
             t, *_ = sim.getShapeGeomInfo(nshape)
             if (t & 4) == 0:
                 # The sub-shape is not convex somehow. Improve:
@@ -232,8 +232,8 @@ def getConvexDecomposed(shapeHandle, params, adoptColor):
     sim.setShapeMass(newShape, sim.getShapeMass(shapeHandle))
     inertiaMatrix, com = sim.getShapeInertia(shapeHandle)
     sim.setShapeInertia(newShape, inertiaMatrix, com)
-    
+
     # Various:
     sim.setObjectAlias(newShape, sim.getObjectAlias(shapeHandle) + '_convexDecomposed')
-    
+
     return newShape
