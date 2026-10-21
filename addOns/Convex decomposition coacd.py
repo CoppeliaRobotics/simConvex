@@ -1,4 +1,4 @@
-#python
+#luaExec wrapper = 'pythonWrapper-2'
 
 '''luaExec
 function sysCall_info()
